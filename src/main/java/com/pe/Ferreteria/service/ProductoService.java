@@ -39,7 +39,7 @@ public class ProductoService implements IProductoService{
 
         producto.setId_producto(productoDto.getId_producto());
         producto.setNombre(productoDto.getNombre());
-        producto.setMarca(productoDto.getCategoria());
+        producto.setMarca(productoDto.getMarca());
         producto.setCategoria(productoDto.getCategoria());
         producto.setPrecio(productoDto.getPrecio());
         producto.setStock(productoDto.getStock());
