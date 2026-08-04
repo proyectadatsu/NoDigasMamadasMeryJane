@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRO-BUILD Ferretería & Suministros Industriales</title>
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --brand-orange: #ff6b00;
+            --brand-orange-hover: #e05e00;
+            --brand-dark: #0f172a;
+            --brand-slate: #1e293b;
+            
+            --bg-body: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 14px 28px -4px rgba(255, 107, 0, 0.15);
+        }
+
+        [data-bs-theme="dark"] {
+            --bg-body: #0b0f17;
+            --card-bg: #141b2d;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+            --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 14px 28px -4px rgba(255, 107, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top E-Commerce Header */
+        .top-bar {
+            background-color: var(--brand-dark);
+            color: #94a3b8;
+            font-size: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .navbar-main {
+            background-color: var(--brand-slate);
+            border-bottom: 3px solid var(--brand-orange);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .brand-logo-badge {
+            background: linear-gradient(135deg, #ff6b00, #ff8c00);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.4);
+        }
+
+        .brand-title {
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .brand-accent {
+            color: var(--brand-orange);
+        }
+
+        /* Dark Mode Toggle */
+        .btn-theme-switch {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            border-radius: 30px;
+            padding: 6px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-theme-switch:hover {
+            background: var(--brand-orange);
+            border-color: var(--brand-orange);
+            color: #ffffff;
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%);
+            border-radius: 24px;
+            padding: 36px 40px;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.3);
+            margin-bottom: 28px;
+        }
+
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255, 107, 0, 0.25) 0%, rgba(255, 107, 0, 0) 70%);
+            pointer-events: none;
+        }
+
+        /* Primary Action Buttons */
+        .btn-brand {
+            background: linear-gradient(135deg, #ff6b00, #ff8c00);
+            color: #ffffff;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 22px;
+            box-shadow: 0 4px 14px rgba(255, 107, 0, 0.35);
+            transition: all 0.25s ease;
+        }
+
+        .btn-brand:hover {
+            background: linear-gradient(135deg, #e05e00, #ff6b00);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 0, 0.45);
+        }
+
+        /* E-Commerce Product Cards */
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: var(--shadow-card);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(255, 107, 0, 0.4);
+        }
+
+        .product-icon-container {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: rgba(255, 107, 0, 0.1);
+            color: var(--brand-orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 16px;
+        }
+
+        .badge-brand {
+            background: var(--bg-body);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            font-weight: 700;
+            font-size: 0.725rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .badge-category {
+            font-size: 0.775rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .cat-manuales { background: rgba(37, 99, 235, 0.12); color: #2563eb; }
+        .cat-electricas { background: rgba(255, 107, 0, 0.12); color: #ff6b00; }
+        .cat-consumibles { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+
+        .price-display {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--brand-orange);
+            letter-spacing: -0.5px;
+        }
+
+        /* Stock Status Indicator */
+        .stock-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .stock-optimo { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        .stock-bajo { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+        /* Data Table Custom */
+        .table-container-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+        }
+
+        .table-ecommerce {
+            margin: 0;
+            width: 100%;
+        }
+
+        .table-ecommerce thead th {
+            background-color: var(--brand-slate);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.75px;
+            padding: 16px 20px;
+            border: none;
+        }
+
+        .table-ecommerce tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.15s ease;
+        }
+
+        .table-ecommerce tbody tr:hover {
+            background-color: rgba(255, 107, 0, 0.04);
+        }
+
+        .table-ecommerce tbody td {
+            padding: 16px 20px;
+            vertical-align: middle;
+        }
+
+        /* View Mode Switch Buttons */
+        .btn-view-switch {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-view-switch.active {
+            background: var(--brand-orange);
+            color: #ffffff;
+            border-color: var(--brand-orange);
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
+        }
+
+        footer {
+            margin-top: auto;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Announcement Bar -->
+    <div class="top-bar py-2">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>
+                <i class="bi bi-truck text-warning me-2"></i>
+                <span>Envíos a todo el país | Atención Corporativa & Ferretera</span>
+            </div>
+            <div class="d-none d-md-flex align-items-center gap-3">
+                <span><i class="bi bi-telephone me-1"></i> (01) 800-PROBUILD</span>
+                <span><i class="bi bi-geo-alt me-1"></i> Tiendas en todo el Perú</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-main py-3 sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-3" href="#">
+                <div class="brand-logo-badge">
+                    <i class="bi bi-tools"></i>
+                </div>
+                <div>
+                    <div class="brand-title">PRO-BUILD <span class="brand-accent">FERRETERÍA</span></div>
+                    <div style="font-size: 0.7rem; color: #94a3b8; letter-spacing: 0.8px; font-weight: 700; text-transform: uppercase;">Tienda Virtual & Equipamiento Industrial</div>
+                </div>
+            </a>
+
+            <div class="d-flex align-items-center gap-3">
+                <!-- Dark Mode Button -->
+                <button class="btn-theme-switch" id="themeToggleBtn" onclick="toggleDarkMode()">
+                    <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                    <span id="themeText">Modo Oscuro</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="container py-4">
+
+        <!-- Hero E-Commerce Banner -->
+        <div class="hero-banner d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-4">
+            <div style="max-width: 600px; z-index: 1;">
+                <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill mb-3">
+                    <i class="bi bi-star-fill me-1"></i> Catálogo Oficial 2026
+                </span>
+                <h1 class="display-6 fw-extrabold mb-2" style="letter-spacing: -1px;">Gestión de Herramientas & Insumos</h1>
+                <p class="text-slate-300 opacity-90 m-0 lead fs-6">Administra el inventario de la ferretería en tiempo real mediante Spring Boot, JPA y Thymeleaf.</p>
+            </div>
+            <div class="z-1">
+                <button class="btn btn-brand btn-lg d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalCrearProducto">
+                    <i class="bi bi-plus-circle-fill fs-5"></i>
+                    <span>Registrar Nuevo Producto</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter & Control Panel -->
+        <div class="card p-3 border-0 shadow-sm rounded-4 mb-4" style="background: var(--card-bg); border: 1px solid var(--border-color) !important;">
+            <div class="row g-3 align-items-center">
+                <!-- Search Input -->
+                <div class="col-12 col-md-5">
+                    <div class="position-relative">
+                        <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                        <input type="text" id="searchInput" class="form-control ps-5 py-2 rounded-3" style="background: var(--bg-body); border-color: var(--border-color); color: var(--text-main);" placeholder="Buscar producto, marca o categoría...">
+                    </div>
+                </div>
+
+                <!-- Category Dropdown Filter -->
+                <div class="col-12 col-sm-6 col-md-4">
+                    <select id="categorySelect" class="form-select py-2 rounded-3" style="background: var(--bg-body); border-color: var(--border-color); color: var(--text-main);">
+                        <option value="">Todas las Categorías</option>
+                        <option value="Herramientas Manuales">Herramientas Manuales</option>
+                        <option value="Herramientas Eléctricas">Herramientas Eléctricas</option>
+                        <option value="Consumibles y Accesorios">Consumibles y Accesorios</option>
+                    </select>
+                </div>
+
+                <!-- View Switch Buttons -->
+                <div class="col-12 col-sm-6 col-md-3 d-flex justify-content-end gap-2">
+                    <button id="btnGridView" class="btn btn-view-switch active" onclick="switchModeView('grid')">
+                        <i class="bi bi-grid-fill me-1"></i> Tarjetas
+                    </button>
+                    <button id="btnTableView" class="btn btn-view-switch" onclick="switchModeView('table')">
+                        <i class="bi bi-table me-1"></i> Tabla
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 1: PRODUCT CARDS GRID (DEFAULT) -->
+        <div id="gridView" class="row g-4 mb-4">
+            <!-- Empty State -->
+            <div class="col-12 text-center py-5" th:if="${productos == null or #lists.isEmpty(productos)}">
+                <i class="bi bi-box-seam display-1 text-muted opacity-25 d-block mb-3"></i>
+                <h4 class="fw-bold">No hay productos registrados en el sistema</h4>
+                <p class="text-muted">Utiliza el botón "Registrar Nuevo Producto" para agregar herramientas al inventario.</p>
+            </div>
+
+            <!-- Product Card Loop -->
+            <div th:each="prod : ${productos}" class="col-12 col-sm-6 col-lg-4 product-card-item" th:data-category="${prod.categoria}">
+                <div class="product-card">
+                    <div>
+                        <!-- Brand & Stock Tag Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge-brand" th:text="${prod.marca}">Stanley</span>
+                            <span th:class="${prod.stock >= 15 ? 'stock-tag stock-optimo' : 'stock-tag stock-bajo'}">
+                                <i th:class="${prod.stock >= 15 ? 'bi bi-check-circle-fill me-1' : 'bi bi-exclamation-triangle-fill me-1'}"></i>
+                                <span th:text="${prod.stock} + ' Unid.'">25 Unid.</span>
+                            </span>
+                        </div>
+
+                        <!-- Product Icon & Title -->
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <div class="product-icon-container">
+                                <i th:class="${prod.categoria == 'Herramientas Eléctricas' ? 'bi bi-lightning-charge-fill' : (prod.categoria == 'Consumibles y Accesorios' ? 'bi bi-disc-fill' : 'bi bi-hammer')}"></i>
+                            </div>
+                            <div>
+                                <span class="badge-category cat-manuales mb-1" th:text="${prod.categoria}">Herramientas</span>
+                                <h5 class="fw-bold m-0 text-truncate" style="max-width: 200px;" th:text="${prod.nombre}">Martillo de Uña</h5>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <p class="text-muted small mb-3" style="line-height: 1.45;" th:text="${prod.descripcion}">Descripción del producto...</p>
+                    </div>
+
+                    <div>
+                        <!-- Price Tag -->
+                        <div class="d-flex justify-content-between align-items-baseline mb-3 pt-3 border-top">
+                            <span class="text-muted small fw-semibold">Precio de Venta:</span>
+                            <span class="price-display">
+                                S/ <span th:text="${#numbers.formatDecimal(prod.precio, 1, 'POINT', 2, 'COMMA')}">35.50</span>
+                            </span>
+                        </div>
+
+                        <!-- Action Buttons: EDIT & DELETE -->
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary btn-sm flex-fill rounded-3 fw-bold py-2"
+                                    th:onclick="prepararEdicion([[${prod.id_producto}]], [[${prod.nombre}]], [[${prod.marca}]], [[${prod.categoria}]], [[${prod.precio}]], [[${prod.stock}]], [[${prod.descripcion}]])"
+                                    data-bs-toggle="modal" data-bs-target="#modalEditarProducto">
+                                <i class="bi bi-pencil-square me-1"></i> Editar
+                            </button>
+
+                            <a th:href="@{/productos/eliminar/{id}(id=${prod.id_producto})}"
+                               class="btn btn-outline-danger btn-sm flex-fill rounded-3 fw-bold py-2"
+                               onclick="return confirm('¿Estás seguro de eliminar este producto del sistema?');">
+                                <i class="bi bi-trash-fill me-1"></i> Eliminar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: DATA TABLE VIEW (TOGGLEABLE) -->
+        <div id="tableView" class="table-container-card mb-4 d-none">
+            <div class="table-responsive">
+                <table class="table table-ecommerce align-middle" id="productosTable">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center" style="width: 70px;">ID</th>
+                            <th scope="col" style="min-width: 200px;">Producto & Marca</th>
+                            <th scope="col" style="min-width: 170px;">Categoría</th>
+                            <th scope="col" class="text-end" style="min-width: 120px;">Precio</th>
+                            <th scope="col" class="text-center" style="min-width: 120px;">Stock</th>
+                            <th scope="col" style="min-width: 280px;">Descripción</th>
+                            <th scope="col" class="text-center" style="min-width: 160px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Table Product Row Loop -->
+                        <tr th:each="prod : ${productos}" class="product-table-row" th:data-category="${prod.categoria}">
+                            <td class="text-center fw-bold opacity-50" th:text="${prod.id_producto}">1</td>
+                            <td>
+                                <div class="fw-bold fs-6" th:text="${prod.nombre}">Martillo de Uña</div>
+                                <span class="badge-brand" th:text="${prod.marca}">Stanley</span>
+                            </td>
+                            <td>
+                                <span class="badge-category cat-manuales" th:text="${prod.categoria}">Herramientas Manuales</span>
+                            </td>
+                            <td class="text-end">
+                                <span class="fw-bold fs-6 text-warning-emphasis">
+                                    S/ <span th:text="${#numbers.formatDecimal(prod.precio, 1, 'POINT', 2, 'COMMA')}">35.50</span>
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <span th:class="${prod.stock >= 15 ? 'stock-tag stock-optimo' : 'stock-tag stock-bajo'}"
+                                      th:text="${prod.stock} + ' Unid.'">25 Unid.</span>
+                            </td>
+                            <td>
+                                <div class="text-muted small" th:text="${prod.descripcion}">Descripción...</div>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-1">
+                                    <button class="btn btn-outline-primary btn-sm rounded-2"
+                                            th:onclick="prepararEdicion([[${prod.id_producto}]], [[${prod.nombre}]], [[${prod.marca}]], [[${prod.categoria}]], [[${prod.precio}]], [[${prod.stock}]], [[${prod.descripcion}]])"
+                                            data-bs-toggle="modal" data-bs-target="#modalEditarProducto" title="Editar">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                    <a th:href="@{/productos/eliminar/{id}(id=${prod.id_producto})}"
+                                       class="btn btn-outline-danger btn-sm rounded-2"
+                                       onclick="return confirm('¿Estás seguro de eliminar este producto?');" title="Eliminar">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL 1: REGISTRAR NUEVO PRODUCTO -->
+    <div class="modal fade" id="modalCrearProducto" tabindex="-1" aria-labelledby="modalCrearLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4" style="background: var(--card-bg); color: var(--text-main);">
+                <div class="modal-header border-bottom py-3" style="background: var(--brand-slate); color: #ffffff;">
+                    <h5 class="modal-title fw-bold" id="modalCrearLabel">
+                        <i class="bi bi-plus-circle-fill text-warning me-2"></i>Registrar Nuevo Producto
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/productos/guardar}" method="POST" th:object="${nuevoProducto}">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Nombre del Producto</label>
+                            <input type="text" th:field="*{nombre}" class="form-control rounded-3" placeholder="Ej. Taladro Percutor 650W" required>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small">Marca</label>
+                                <input type="text" th:field="*{marca}" class="form-control rounded-3" placeholder="Ej. DeWalt, Stanley" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small">Categoría</label>
+                                <select th:field="*{categoria}" class="form-select rounded-3" required>
+                                    <option value="Herramientas Manuales">Herramientas Manuales</option>
+                                    <option value="Herramientas Eléctricas">Herramientas Eléctricas</option>
+                                    <option value="Consumibles y Accesorios">Consumibles y Accesorios</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small">Precio (S/)</label>
+                                <input type="number" step="0.01" th:field="*{precio}" class="form-control rounded-3" placeholder="0.00" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small">Stock Disponible</label>
+                                <input type="number" th:field="*{stock}" class="form-control rounded-3" placeholder="0" required>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label fw-semibold small">Descripción Técnica</label>
+                            <textarea th:field="*{descripcion}" class="form-control rounded-3" rows="3" placeholder="Detalles de especificaciones..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top p-3">
+                        <button type="button" class="btn btn-light rounded-3 fw-semibold" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-brand rounded-3">Guardar Producto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: EDITAR PRODUCTO -->
+    <div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4" style="background: var(--card-bg); color: var(--text-main);">
+                <div class="modal-header border-bottom py-3" style="background: var(--brand-slate); color: #ffffff;">
+                    <h5 class="modal-title fw-bold" id="modalEditarLabel">
+                        <i class="bi bi-pencil-square text-warning me-2"></i>Editar Producto
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formEditarProducto" method="POST">
+                    <input type="hidden" id="edit_id" name="id_producto">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Nombre del Producto</label>
+                            <input type="text" id="edit_nombre" name="nombre" class="form-control rounded-3" required>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small">Marca</label>
+                                <input type="text" id="edit_marca" name="marca" class="form-control rounded-3" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small">Categoría</label>
+                                <select id="edit_categoria" name="categoria" class="form-select rounded-3" required>
+                                    <option value="Herramientas Manuales">Herramientas Manuales</option>
+                                    <option value="Herramientas Eléctricas">Herramientas Eléctricas</option>
+                                    <option value="Consumibles y Accesorios">Consumibles y Accesorios</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small">Precio (S/)</label>
+                                <input type="number" step="0.01" id="edit_precio" name="precio" class="form-control rounded-3" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small">Stock Disponible</label>
+                                <input type="number" id="edit_stock" name="stock" class="form-control rounded-3" required>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label fw-semibold small">Descripción Técnica</label>
+                            <textarea id="edit_descripcion" name="descripcion" class="form-control rounded-3" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top p-3">
+                        <button type="button" class="btn btn-light rounded-3 fw-semibold" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-brand rounded-3">Actualizar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Corporate Footer -->
+    <footer class="py-4">
+        <div class="container text-center small">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                <div>
+                    &copy; 2026 <strong>PRO-BUILD Ferretería Industrial</strong> &mdash; Todos los derechos reservados
+                </div>
+                <div class="d-flex gap-3">
+                    <span><i class="bi bi-shield-check text-success me-1"></i> API REST + Thymeleaf Active</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript Interactive Logic -->
+    <script>
+        // 1. DARK MODE TOGGLE & LOCALSTORAGE
+        function applyThemePreference() {
+            const theme = localStorage.getItem('probuild-theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            updateThemeUI(theme);
+        }
+
+        function toggleDarkMode() {
+            const current = document.documentElement.getAttribute('data-bs-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-bs-theme', next);
+            localStorage.setItem('probuild-theme', next);
+            updateThemeUI(next);
+        }
+
+        function updateThemeUI(theme) {
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+
+            if (theme === 'dark') {
+                icon.className = 'bi bi-sun-fill text-warning';
+                text.textContent = 'Modo Claro';
+            } else {
+                icon.className = 'bi bi-moon-stars-fill';
+                text.textContent = 'Modo Oscuro';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', applyThemePreference);
+
+        // 2. PREPARAR MODAL DE EDICION CON DATOS DEL PRODUCTO
+        function prepararEdicion(id, nombre, marca, categoria, precio, stock, descripcion) {
+            document.getElementById('formEditarProducto').action = '/productos/actualizar/' + id;
+            document.getElementById('edit_id').value = id;
+            document.getElementById('edit_nombre').value = nombre;
+            document.getElementById('edit_marca').value = marca;
+            document.getElementById('edit_categoria').value = categoria;
+            document.getElementById('edit_precio').value = precio;
+            document.getElementById('edit_stock').value = stock;
+            document.getElementById('edit_descripcion').value = descripcion;
+        }
+
+        // 3. LIVE REAL-TIME SEARCH & CATEGORY FILTER
+        const searchInput = document.getElementById('searchInput');
+        const categorySelect = document.getElementById('categorySelect');
+
+        function executeLiveFilter() {
+            const query = searchInput.value.toLowerCase().trim();
+            const selectedCat = categorySelect.value.toLowerCase().trim();
+
+            // Filter Product Cards
+            document.querySelectorAll('.product-card-item').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const category = (card.getAttribute('data-category') || '').toLowerCase();
+
+                const matchQuery = text.includes(query);
+                const matchCategory = !selectedCat || category === selectedCat;
+
+                card.style.display = (matchQuery && matchCategory) ? '' : 'none';
+            });
+
+            // Filter Table Rows
+            document.querySelectorAll('#productosTable tbody tr.product-table-row').forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const category = (row.getAttribute('data-category') || '').toLowerCase();
+
+                const matchQuery = text.includes(query);
+                const matchCategory = !selectedCat || category === selectedCat;
+
+                row.style.display = (matchQuery && matchCategory) ? '' : 'none';
+            });
+        }
+
+        searchInput?.addEventListener('keyup', executeLiveFilter);
+        categorySelect?.addEventListener('change', executeLiveFilter);
+
+        // 4. VIEW MODE SWITCH (GRID CARDS VS TABLE)
+        function switchModeView(mode) {
+            const gridView = document.getElementById('gridView');
+            const tableView = document.getElementById('tableView');
+            const btnGrid = document.getElementById('btnGridView');
+            const btnTable = document.getElementById('btnTableView');
+
+            if (mode === 'table') {
+                gridView.classList.add('d-none');
+                tableView.classList.remove('d-none');
+                btnTable.classList.add('active');
+                btnGrid.classList.remove('active');
+            } else {
+                tableView.classList.add('d-none');
+                gridView.classList.remove('d-none');
+                btnGrid.classList.add('active');
+                btnTable.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
