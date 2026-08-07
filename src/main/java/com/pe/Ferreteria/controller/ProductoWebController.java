@@ -16,34 +16,52 @@ public class ProductoWebController {
     @Autowired
     private ProductoService productoService;
 
+    // 1. List View
     @GetMapping
     public String listarProductos(Model model) {
         model.addAttribute("productos", productoService.traerProductos());
-        model.addAttribute("nuevoProducto", new ProductoDto());
-        return "productos";
+        return "productos-list";
     }
 
+    // 2. Dedicated Form View for Creating a New Product
+    @GetMapping("/nuevo")
+    public String mostrarFormularioCrear(Model model) {
+        model.addAttribute("producto", new ProductoDto());
+        model.addAttribute("titulo", "Registrar Nuevo Producto");
+        model.addAttribute("modoEdicion", false);
+        return "producto-form";
+    }
+
+    // 3. Dedicated Form View for Editing an Existing Product
+    @GetMapping("/editar/{id}")
+    public String mostrarFormularioEditar(@PathVariable Integer id, Model model) {
+        ProductoDto dto = productoService.buscarProducto(id);
+        model.addAttribute("producto", dto);
+        model.addAttribute("titulo", "Editar Producto #" + id);
+        model.addAttribute("modoEdicion", true);
+        return "producto-form";
+    }
+
+    // 4. Save/Update Handler
     @PostMapping("/guardar")
-    public String guardarProducto(@Valid @ModelAttribute("nuevoProducto") ProductoDto dto, BindingResult result, Model model) {
+    public String guardarProducto(@Valid @ModelAttribute("producto") ProductoDto dto, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("productos", productoService.traerProductos());
-            return "productos";
+            boolean esEdicion = dto.getId_producto() != null;
+            model.addAttribute("titulo", esEdicion ? "Editar Producto #" + dto.getId_producto() : "Registrar Nuevo Producto");
+            model.addAttribute("modoEdicion", esEdicion);
+            return "producto-form";
         }
-        productoService.registrarProducto(dto);
+
+        if (dto.getId_producto() != null) {
+            productoService.modificarProducto(dto.getId_producto(), dto);
+        } else {
+            productoService.registrarProducto(dto);
+        }
+
         return "redirect:/productos";
     }
 
-    @PostMapping("/actualizar/{id}")
-    public String actualizarProducto(@PathVariable Integer id, @Valid @ModelAttribute ProductoDto dto, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            model.addAttribute("productos", productoService.traerProductos());
-            model.addAttribute("nuevoProducto", new ProductoDto());
-            return "productos";
-        }
-        productoService.modificarProducto(id, dto);
-        return "redirect:/productos";
-    }
-
+    // 5. Delete Handler
     @GetMapping("/eliminar/{id}")
     public String eliminarProducto(@PathVariable Integer id) {
         productoService.eliminarProducto(id);

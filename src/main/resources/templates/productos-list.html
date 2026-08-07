@@ -37,7 +37,7 @@
     <!-- Main Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-main py-3 sticky-top">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-3" href="#">
+            <a class="navbar-brand d-flex align-items-center gap-3" th:href="@{/productos}">
                 <div class="brand-logo-badge">
                     <i class="bi bi-tools"></i>
                 </div>
@@ -70,10 +70,11 @@
                 <p class="text-slate-300 opacity-90 m-0 lead fs-6">Administra el inventario de la ferretería en tiempo real mediante Spring Boot, JPA y Thymeleaf.</p>
             </div>
             <div class="z-1">
-                <button class="btn btn-brand btn-lg d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalCrearProducto">
+                <!-- target="_blank" forces opening in a NEW TAB -->
+                <a th:href="@{/productos/nuevo}" target="_blank" rel="noopener noreferrer" class="btn btn-brand btn-lg d-inline-flex align-items-center gap-2">
                     <i class="bi bi-plus-circle-fill fs-5"></i>
                     <span>Registrar Nuevo Producto</span>
-                </button>
+                </a>
             </div>
         </div>
 
@@ -116,7 +117,10 @@
             <div class="col-12 text-center py-5" th:if="${productos == null or #lists.isEmpty(productos)}">
                 <i class="bi bi-box-seam display-1 text-muted opacity-25 d-block mb-3"></i>
                 <h4 class="fw-bold">No hay productos registrados en el sistema</h4>
-                <p class="text-muted">Utiliza el botón "Registrar Nuevo Producto" para agregar herramientas al inventario.</p>
+                <p class="text-muted mb-4">Utiliza el botón "Registrar Nuevo Producto" para agregar herramientas al inventario.</p>
+                <a th:href="@{/productos/nuevo}" target="_blank" rel="noopener noreferrer" class="btn btn-brand">
+                    <i class="bi bi-plus-circle-fill me-1"></i> Registrar Primer Producto
+                </a>
             </div>
 
             <!-- Product Card Loop -->
@@ -156,16 +160,15 @@
                             </span>
                         </div>
 
-                        <!-- Action Buttons: EDIT & DELETE -->
+                        <!-- Action Buttons: EDIT (target="_blank") & DELETE -->
                         <div class="d-flex gap-2">
-                            <button class="btn btn-outline-primary btn-sm flex-fill rounded-3 fw-bold py-2"
-                                    th:onclick="prepararEdicion([[${prod.id_producto}]], [[${prod.nombre}]], [[${prod.marca}]], [[${prod.categoria}]], [[${prod.precio}]], [[${prod.stock}]], [[${prod.descripcion}]])"
-                                    data-bs-toggle="modal" data-bs-target="#modalEditarProducto">
+                            <a th:href="@{/productos/editar/{id}(id=${prod.id_producto})}" target="_blank" rel="noopener noreferrer"
+                               class="btn btn-outline-primary btn-sm flex-fill rounded-3 fw-bold py-2 text-center">
                                 <i class="bi bi-pencil-square me-1"></i> Editar
-                            </button>
+                            </a>
 
                             <a th:href="@{/productos/eliminar/{id}(id=${prod.id_producto})}"
-                               class="btn btn-outline-danger btn-sm flex-fill rounded-3 fw-bold py-2"
+                               class="btn btn-outline-danger btn-sm flex-fill rounded-3 fw-bold py-2 text-center"
                                onclick="return confirm('¿Estás seguro de eliminar este producto del sistema?');">
                                 <i class="bi bi-trash-fill me-1"></i> Eliminar
                             </a>
@@ -215,11 +218,10 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-1">
-                                    <button class="btn btn-outline-primary btn-sm rounded-2"
-                                            th:onclick="prepararEdicion([[${prod.id_producto}]], [[${prod.nombre}]], [[${prod.marca}]], [[${prod.categoria}]], [[${prod.precio}]], [[${prod.stock}]], [[${prod.descripcion}]])"
-                                            data-bs-toggle="modal" data-bs-target="#modalEditarProducto" title="Editar">
+                                    <a th:href="@{/productos/editar/{id}(id=${prod.id_producto})}" target="_blank" rel="noopener noreferrer"
+                                       class="btn btn-outline-primary btn-sm rounded-2" title="Editar">
                                         <i class="bi bi-pencil-square"></i>
-                                    </button>
+                                    </a>
                                     <a th:href="@{/productos/eliminar/{id}(id=${prod.id_producto})}"
                                        class="btn btn-outline-danger btn-sm rounded-2"
                                        onclick="return confirm('¿Estás seguro de eliminar este producto?');" title="Eliminar">
@@ -233,115 +235,6 @@
             </div>
         </div>
 
-    </div>
-
-    <!-- MODAL 1: REGISTRAR NUEVO PRODUCTO -->
-    <div class="modal fade" id="modalCrearProducto" tabindex="-1" aria-labelledby="modalCrearLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg rounded-4" style="background: var(--card-bg); color: var(--text-main);">
-                <div class="modal-header border-bottom py-3" style="background: var(--brand-slate); color: #ffffff;">
-                    <h5 class="modal-title fw-bold" id="modalCrearLabel">
-                        <i class="bi bi-plus-circle-fill text-warning me-2"></i>Registrar Nuevo Producto
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form th:action="@{/productos/guardar}" method="POST" th:object="${nuevoProducto}">
-                    <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold small">Nombre del Producto</label>
-                            <input type="text" th:field="*{nombre}" class="form-control rounded-3" placeholder="Ej. Taladro Percutor 650W" required>
-                        </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-6">
-                                <label class="form-label fw-semibold small">Marca</label>
-                                <input type="text" th:field="*{marca}" class="form-control rounded-3" placeholder="Ej. DeWalt, Stanley" required>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label fw-semibold small">Categoría</label>
-                                <select th:field="*{categoria}" class="form-select rounded-3" required>
-                                    <option value="Herramientas Manuales">Herramientas Manuales</option>
-                                    <option value="Herramientas Eléctricas">Herramientas Eléctricas</option>
-                                    <option value="Consumibles y Accesorios">Consumibles y Accesorios</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-6">
-                                <label class="form-label fw-semibold small">Precio (S/)</label>
-                                <input type="number" step="0.01" min="0" max="999999" th:field="*{precio}" class="form-control rounded-3" placeholder="0.00" required>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label fw-semibold small">Stock Disponible</label>
-                                <input type="number" min="0" max="10000" th:field="*{stock}" class="form-control rounded-3" placeholder="0" required>
-                            </div>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label fw-semibold small">Descripción Técnica</label>
-                            <textarea th:field="*{descripcion}" class="form-control rounded-3" rows="3" placeholder="Detalles de especificaciones..."></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-top p-3">
-                        <button type="button" class="btn btn-light rounded-3 fw-semibold" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-brand rounded-3">Guardar Producto</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 2: EDITAR PRODUCTO -->
-    <div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg rounded-4" style="background: var(--card-bg); color: var(--text-main);">
-                <div class="modal-header border-bottom py-3" style="background: var(--brand-slate); color: #ffffff;">
-                    <h5 class="modal-title fw-bold" id="modalEditarLabel">
-                        <i class="bi bi-pencil-square text-warning me-2"></i>Editar Producto
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="formEditarProducto" method="POST">
-                    <input type="hidden" id="edit_id" name="id_producto">
-                    <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold small">Nombre del Producto</label>
-                            <input type="text" id="edit_nombre" name="nombre" class="form-control rounded-3" required>
-                        </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-6">
-                                <label class="form-label fw-semibold small">Marca</label>
-                                <input type="text" id="edit_marca" name="marca" class="form-control rounded-3" required>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label fw-semibold small">Categoría</label>
-                                <select id="edit_categoria" name="categoria" class="form-select rounded-3" required>
-                                    <option value="Herramientas Manuales">Herramientas Manuales</option>
-                                    <option value="Herramientas Eléctricas">Herramientas Eléctricas</option>
-                                    <option value="Consumibles y Accesorios">Consumibles y Accesorios</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-6">
-                                <label class="form-label fw-semibold small">Precio (S/)</label>
-                                <input type="number" step="0.01" min="0" max="999999" id="edit_precio" name="precio" class="form-control rounded-3" required>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label fw-semibold small">Stock Disponible</label>
-                                <input type="number" min="0" max="10000" id="edit_stock" name="stock" class="form-control rounded-3" required>
-                            </div>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label fw-semibold small">Descripción Técnica</label>
-                            <textarea id="edit_descripcion" name="descripcion" class="form-control rounded-3" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-top p-3">
-                        <button type="button" class="btn btn-light rounded-3 fw-semibold" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-brand rounded-3">Actualizar Cambios</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 
     <!-- Corporate Footer -->

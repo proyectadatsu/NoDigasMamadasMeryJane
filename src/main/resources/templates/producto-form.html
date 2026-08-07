@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo} + ' - PRO-BUILD'">Formulario de Producto - PRO-BUILD</title>
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- External Modular CSS -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+    <!-- Top Announcement Bar -->
+    <div class="top-bar py-2">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>
+                <i class="bi bi-truck text-warning me-2"></i>
+                <span>Envíos a todo el país | Atención Corporativa & Ferretera</span>
+            </div>
+            <div class="d-none d-md-flex align-items-center gap-3">
+                <span><i class="bi bi-telephone me-1"></i> (01) 800-PROBUILD</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-main py-3 sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-3" th:href="@{/productos}">
+                <div class="brand-logo-badge">
+                    <i class="bi bi-tools"></i>
+                </div>
+                <div>
+                    <div class="brand-title">PRO-BUILD <span class="brand-accent">FERRETERÍA</span></div>
+                    <div style="font-size: 0.7rem; color: #94a3b8; letter-spacing: 0.8px; font-weight: 700; text-transform: uppercase;">Tienda Virtual & Equipamiento Industrial</div>
+                </div>
+            </a>
+
+            <div class="d-flex align-items-center gap-3">
+                <!-- Dark Mode Button -->
+                <button class="btn-theme-switch" id="themeToggleBtn" onclick="toggleDarkMode()">
+                    <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                    <span id="themeText">Modo Oscuro</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="container py-5">
+        
+        <!-- Navigation Back Button -->
+        <div class="mb-4">
+            <a th:href="@{/productos}" onclick="return gestionarRetornoLimpio(event);" 
+               class="btn btn-outline-secondary rounded-3 fw-bold px-3 py-2 d-inline-flex align-items-center gap-2">
+                <i class="bi bi-arrow-left"></i>
+                <span>Volver al Catálogo</span>
+            </a>
+        </div>
+
+        <!-- Dedicated Form Card -->
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-7">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="background: var(--card-bg); border: 1px solid var(--border-color) !important;">
+                    
+                    <!-- Header -->
+                    <div class="p-4" style="background: var(--brand-slate); color: #ffffff;">
+                        <h4 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                            <i th:class="${modoEdicion ? 'bi bi-pencil-square text-warning' : 'bi bi-plus-circle-fill text-warning'}"></i>
+                            <span th:text="${titulo}">Registrar Nuevo Producto</span>
+                        </h4>
+                        <p class="text-slate-300 small m-0">Ingresa o actualiza la información técnica y stock en la base de datos.</p>
+                    </div>
+
+                    <!-- Form -->
+                    <form th:action="@{/productos/guardar}" method="POST" th:object="${producto}" id="formProducto">
+                        <input type="hidden" th:field="*{id_producto}">
+
+                        <div class="card-body p-4">
+                            <!-- Nombre -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small">Nombre del Producto</label>
+                                <input type="text" th:field="*{nombre}" class="form-control form-control-lg rounded-3 fs-6" 
+                                       placeholder="Ej. Taladro Percutor 1/2'' 650W" required>
+                                <div class="text-danger small mt-1" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <!-- Marca -->
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label fw-bold small">Marca</label>
+                                    <input type="text" th:field="*{marca}" class="form-control rounded-3" 
+                                           placeholder="Ej. DeWalt, Stanley, Bosch" required>
+                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('marca')}" th:errors="*{marca}"></div>
+                                </div>
+
+                                <!-- Categoría -->
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label fw-bold small">Categoría</label>
+                                    <select th:field="*{categoria}" class="form-select rounded-3" required>
+                                        <option value="Herramientas Manuales">Herramientas Manuales</option>
+                                        <option value="Herramientas Eléctricas">Herramientas Eléctricas</option>
+                                        <option value="Consumibles y Accesorios">Consumibles y Accesorios</option>
+                                        <option value="Medición y Niveles">Medición y Niveles</option>
+                                    </select>
+                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <!-- Precio -->
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label fw-bold small">Precio de Venta (S/)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text fw-bold">S/</span>
+                                        <input type="number" step="0.01" min="0" max="999999" th:field="*{precio}" class="form-control rounded-end-3" 
+                                               placeholder="0.00" required>
+                                    </div>
+                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
+                                </div>
+
+                                <!-- Stock -->
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label fw-bold small">Stock Inicial / Disponible</label>
+                                    <div class="input-group">
+                                        <input type="number" min="0" max="10000" th:field="*{stock}" class="form-control rounded-start-3" 
+                                               placeholder="0" required>
+                                        <span class="input-group-text fw-semibold">Unidades</span>
+                                    </div>
+                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
+                                </div>
+                            </div>
+
+                            <!-- Descripción -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold small">Descripción Técnica y Especificaciones</label>
+                                <textarea th:field="*{descripcion}" class="form-control rounded-3" rows="4" 
+                                          placeholder="Detalla las especificaciones técnicas, dimensiones, potencia o material..."></textarea>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="d-flex justify-content-end gap-3 pt-3 border-top">
+                                <a th:href="@{/productos}" onclick="return gestionarRetornoLimpio(event);" 
+                                   class="btn btn-light btn-lg rounded-3 fw-semibold fs-6">Cancelar</a>
+                                <button type="submit" class="btn btn-brand btn-lg rounded-3 fs-6">
+                                    <i th:class="${modoEdicion ? 'bi bi-check-circle-fill me-1' : 'bi bi-plus-circle-fill me-1'}"></i>
+                                    <span th:text="${modoEdicion ? 'Actualizar Cambios' : 'Guardar Producto'}">Guardar Producto</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Corporate Footer -->
+    <footer class="py-4 mt-5">
+        <div class="container text-center small">
+            <div>
+                &copy; 2026 <strong>PRO-BUILD Ferretería Industrial</strong> &mdash; Todos los derechos reservados
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- External Modular JavaScript -->
+    <script th:src="@{/js/main.js}"></script>
+
+    <!-- Tab Navigation Management Script -->
+    <script>
+        function gestionarRetornoLimpio(event) {
+            // Si la ventana fue abierta como nueva pestaña desde la lista principal (opener existe)
+            if (window.opener && !window.opener.closed) {
+                try {
+                    window.opener.location.reload();
+                    window.close();
+                    if (event) event.preventDefault();
+                    return false;
+                } catch(e) {
+                    console.log('Navegando vía fallback');
+                }
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
