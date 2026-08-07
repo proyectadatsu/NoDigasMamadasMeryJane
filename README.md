@@ -1,54 +1,69 @@
-# 🛠️ Sistema de Gestión de Ferretería - Prueba Técnica JR
+# 🛠️ PRO-BUILD Ferretería / MasterTools - Sistema de Gestión de Inventario y Tienda Virtual
 
-Aplicación web y API REST desarrollada con **Spring Boot**, **Spring Data JPA** y **Thymeleaf** para la administración de inventario y herramientas de una ferretería.
-
----
-
-## 🎯 Objetivo
-Desarrollar un sistema de gestión integral que exponga una **API RESTful** para el manejo de inventario, preparado para ser consumido por clientes externos o frontends independientes, e integrando una **interfaz gráfica web dinámica** mediante Thymeleaf para la interacción directa del usuario.
+Aplicación web e-commerce y API RESTful desarrollada con Java y Spring Boot para la administración profesional de inventario, herramientas y productos de ferretería, con control de acceso basado en roles y un frontend moderno con Thymeleaf.
 
 ---
 
-## 📦 Modelo de Datos (`Herramienta`)
-Cada herramienta o producto dentro del sistema cuenta con las siguientes propiedades:
-* **`id`**: Identificador único (Primary Key).
-* **`nombre`**: Nombre de la herramienta (ej. *Martillo de galpón*, *Taladro percutor*).
-* **`marca`**: Marca del fabricante (ej. *Stanley*, *DeWalt*).
-* **`categoria`**: Categoría del producto (ej. *Manual*, *Eléctrica*, *Accesorios*).
-* **`precio`**: Precio unitario de venta.
-* **`cantidadStock`**: Cantidad de unidades disponibles en inventario.
-* **`descripcion`**: Detalle o especificaciones técnicas de la herramienta.
+## 🎯 Objetivo del Proyecto
+
+Desarrollar una solución integral para el sector ferretero que exponga una **API RESTful** para consumo JSON de aplicaciones cliente externas, combinada con un **Frontend Web administrativo/e-commerce** dinámico, modular y responsive.
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## 🚀 Características Principales
+
+* 🔐 **Seguridad & Roles (Spring Security):**
+  * `ROLE_ADMIN` (Empleado): Acceso total para crear, editar, reabastecer stock y eliminar productos.
+  * `ROLE_USER` (Cliente): Modo lectura interactivo para explorar el catálogo de herramientas.
+* 📦 **Gestión de Inventario (CRUD Completo):**
+  * Registro y actualización con validaciones estrictas (`@Min`, `@Max`, `@PositiveOrZero`) para evitar stock negativo o valores irrealistas.
+* 🎨 **Interfaz E-Commerce Moderna:**
+  * Diseño industrial vanguardista en tonos naranja (#ff6b00) y azul oscuro.
+  * Selector de **Modo Oscuro / Modo Claro** persistente sin parpadeos visuales.
+* 🧩 **Arquitectura Web Modular:**
+  * Separación limpia de código HTML, estilos CSS (`/static/css/styles.css`) y scripts JS (`/static/js/main.js`).
+  * Vistas independientes para el Catálogo (`productos-list.html`) y Formulario dedicado (`producto-form.html`) con apertura en pestañas independientes (`target="_blank"`).
+
+---
+
+## 📦 Modelo de Datos (`Producto`)
+
+* `id` (Integer/Long): Identificador único autoincrementable.
+* `nombre` (String): Nombre de la herramienta o insumo.
+* `marca` (String): Fabricante (ej. DeWalt, Stanley, Bosch, Truper, Milwaukee).
+* `categoria` (String): Categorización técnica (Herramientas Manuales, Eléctricas, Consumibles, Medición).
+* `precio` (Double/BigDecimal): Precio unitario de venta.
+* `stock` / `cantidadDisponible` (Integer): Control de existencias con restricciones numéricas reales.
+* `descripcion` (String): Especificaciones técnicas.
+
+---
+
+## 🛠️ Stack Tecnológico
+
 * **Lenguaje:** Java 17+
-* **Framework Backend:** Spring Boot
-* **Persistencia & ORM:** Spring Data JPA / Hibernate
-* **Base de Datos:** Base de datos relacional (MySQL / H2)
-* **Motor de Plantillas (Frontend):** Thymeleaf + HTML5 / CSS3
-* **Arquitectura:** Modelo en capas (`Controller`, `Service`, `Repository`, `Entity`)
+* **Framework Backend:** Spring Boot (Spring MVC, Spring Data JPA, Spring Security, Bean Validation)
+* **Motor de Plantillas:** Thymeleaf
+* **Persistencia / BD:** Relacional (SQL Server / H2)
+* **Frontend:** HTML5, CSS3, JavaScript ES6
+* **Control de Versiones:** Git & GitHub
 
 ---
 
-## 🚀 Funcionalidades y Endpoints API REST
+## 🔌 Endpoints de la API REST (`/api/productos`)
 
-### 🛠️ Gestión de Herramientas / Productos (`/api/herramientas`)
-
-| Método | Endpoint | Descripción |
-| :--- | :--- | :--- |
-| `GET` | `/api/herramientas` | Obtener la lista completa de herramientas registradas. |
-| `GET` | `/api/herramientas/{id}` | Consultar los detalles de una herramienta específica por su ID. |
-| `POST` | `/api/herramientas` | Registrar una nueva herramienta en el sistema. |
-| `PUT` | `/api/herramientas/{id}` | Modificar los datos o stock de una herramienta existente. |
-| `DELETE` | `/api/herramientas/{id}` | Eliminar una herramienta del sistema. |
+| Método | Endpoint | Descripción | Acceso |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/productos` | Obtener catálogo completo en JSON | Público / CLIENTE |
+| `GET` | `/api/productos/{id}` | Consultar detalle de un producto por ID | Público / CLIENTE |
+| `POST` | `/api/productos` | Registrar un nuevo producto | Exclusivo ADMIN |
+| `PUT` | `/api/productos/{id}` | Modificar producto o actualizar stock | Exclusivo ADMIN |
+| `DELETE` | `/api/productos/{id}` | Eliminar un producto del inventario | Exclusivo ADMIN |
 
 ---
 
-## 🖥️ Interfaz Gráfica Web (Thymeleaf)
-El proyecto incluye un frontend integrado que permite realizar las operaciones del CRUD mediante una interfaz limpia e intuitiva:
+## 🖥️ Navegación de la Interfaz Web (`/productos`)
 
-* 📋 **Vista Principal:** Listado general de herramientas con stock y precios en tiempo real.
-* ➕ **Formulario de Registro:** Alta de nuevos productos.
-* ✏️ **Edición:** Modificación rápida de datos y actualización de inventario.
-* 🗑️ **Eliminación:** Gestión para dar de baja productos.
+* `/login`: Pantalla de inicio de sesión con validación de credenciales y diseño e-commerce.
+* `/productos`: Catálogo principal con tarjetas de productos, vista en tabla y toggle de modo oscuro.
+* `/productos/nuevo`: Formulario de alta en página/pestaña dedicada (Exclusivo ADMIN).
+* `/productos/actualizar/{id}`: Formulario de edición de herramientas (Exclusivo ADMIN).
